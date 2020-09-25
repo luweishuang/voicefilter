@@ -1,3 +1,5 @@
+model/embedder.pt
+
 .idea/
 # configuration yaml files
 config/*

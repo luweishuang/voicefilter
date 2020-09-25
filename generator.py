@@ -15,6 +15,7 @@ from utils.hparams import HParam
 def formatter(dir_, form, num):
     return os.path.join(dir_, form.replace('*', '%06d' % num))
 
+
 def vad_merge(w):
     intervals = librosa.effects.split(w, top_db=20)
     temp = list()
