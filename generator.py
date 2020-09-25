@@ -6,6 +6,7 @@ import random
 import librosa
 import argparse
 import numpy as np
+import soundfile as sf
 from multiprocessing import Pool, cpu_count
 
 from utils.audio import Audio
@@ -63,8 +64,8 @@ def mix(hp, args, audio, num, s1_dvec, s1_target, s2, train):
     # save vad & normalized wav files
     target_wav_path = formatter(dir_, hp.form.target.wav, num)
     mixed_wav_path = formatter(dir_, hp.form.mixed.wav, num)
-    librosa.output.write_wav(target_wav_path, w1, srate)
-    librosa.output.write_wav(mixed_wav_path, mixed, srate)
+    sf.write(target_wav_path, w1, srate)
+    sf.write(mixed_wav_path, mixed, srate)
 
     # save magnitude spectrograms
     target_mag, _ = audio.wav2spec(w1)
@@ -82,15 +83,15 @@ def mix(hp, args, audio, num, s1_dvec, s1_target, s2, train):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', type=str, required=True,
+    parser.add_argument('-c', '--config', type=str, default="config/config.yaml",
                         help="yaml file for configuration")
-    parser.add_argument('-d', '--libri_dir', type=str, default=None,
+    parser.add_argument('-d', '--libri_dir', type=str, default="/home/psc/Desktop/code/asr/data/LibriSpeech/rr",
                         help="Directory of LibriSpeech dataset, containing folders of train-clean-100, train-clean-360, dev-clean.")
     parser.add_argument('-v', '--voxceleb_dir', type=str, default=None,
                         help="Directory of VoxCeleb2 dataset, ends with 'aac'")
-    parser.add_argument('-o', '--out_dir', type=str, required=True,
+    parser.add_argument('-o', '--out_dir', type=str, default="/home/psc/Desktop/code/asr/data/LibriSpeech/tt",
                         help="Directory of output training triplet")
-    parser.add_argument('-p', '--process_num', type=int, default=None,
+    parser.add_argument('-p', '--process_num', type=int, default=4,
                         help='number of processes to run. default: cpu_count')
     parser.add_argument('--vad', type=int, default=0,
                         help='apply vad to wav file. yes(1) or no(0, default)')
@@ -125,7 +126,7 @@ if __name__ == '__main__':
         train_folders = all_folders[:-20]
         test_folders = all_folders[-20:]
 
-    train_spk = [glob.glob(os.path.join(spk, '**', hp.form.input), recursive=True)
+    train_spk = [glob.glob(os.path.join(spk, '**', hp.form.input), recursive=True)     # 所有以 '*-norm.wav' 为后缀的音频文件
                     for spk in train_folders]
     train_spk = [x for x in train_spk if len(x) >= 2]
 

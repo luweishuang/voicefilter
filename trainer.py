@@ -11,15 +11,15 @@ from datasets.dataloader import create_dataloader
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-b', '--base_dir', type=str, default='.',
+    parser.add_argument('-b', '--base_dir', type=str, default='models',
                         help="Root directory of run.")
-    parser.add_argument('-c', '--config', type=str, required=True,
+    parser.add_argument('-c', '--config', type=str, default="config/config.yaml",
                         help="yaml file for configuration")
-    parser.add_argument('-e', '--embedder_path', type=str, required=True,
+    parser.add_argument('-e', '--embedder_path', type=str, default="models/embedder.pt",
                         help="path of embedder model pt file")
     parser.add_argument('--checkpoint_path', type=str, default=None,
                         help="path of checkpoint pt file")
-    parser.add_argument('-m', '--model', type=str, required=True,
+    parser.add_argument('-m', '--model', type=str, default="voicef",
                         help="Name of the model. Used for both logging and saving checkpoints.")
     args = parser.parse_args()
 
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         format='%(asctime)s - %(levelname)s - %(message)s',
         handlers=[
             logging.FileHandler(os.path.join(log_dir,
-                '%s-%d.log' % (args.model, time.time()))),
+            '%s-%d.log' % (args.model, time.time()))),
             logging.StreamHandler()
         ]
     )
